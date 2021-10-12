@@ -1,6 +1,23 @@
 import React, { Component } from 'react';
 import Timer from './Timer';
 import TimerControl from './TimerButton';
+import { doc, setDoc, deleteDoc } from "firebase/firestore";
+import firebase from './firebase';
+
+
+const loadTimer = async () => {
+    const docRef = doc(firebase.db, 'user', "time");
+    const payload = {
+        time: new Date(),
+    };
+    await setDoc(docRef, payload);
+};
+
+const deleteTimer = async () => {
+    const docRef = doc(firebase.db, 'user', "time" );
+    await deleteDoc(docRef);
+};
+
 
 class TimerPannel extends Component {
     constructor() {
@@ -13,6 +30,8 @@ class TimerPannel extends Component {
     }
     
     handleStartTimer = () => {
+        console.log(new Date());
+        loadTimer();
         this.interval= setInterval(() => {
             this.setState((prev)=> {
                 return {
@@ -36,6 +55,7 @@ class TimerPannel extends Component {
     }
 
     handleStopTimer = () => {
+        deleteTimer();
         console.log('stop');
         this.setState(() => {
             clearInterval(this.interval);
@@ -44,7 +64,6 @@ class TimerPannel extends Component {
                 paused: false,
                 remained: 1500
             };  
-            
         });
     };
 
