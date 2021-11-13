@@ -4,7 +4,6 @@ import TimerControl from './TimerButton';
 import { doc, setDoc, deleteDoc } from "firebase/firestore";
 import firebase from './firebase';
 
-
 const loadTimer = async () => {
     const docRef = doc(firebase.db, 'user', "time");
     const payload = {
@@ -18,37 +17,36 @@ const deleteTimer = async () => {
     await deleteDoc(docRef);
 };
 
-
 class TimerPannel extends Component {
     constructor() {
         super();
         this.state = {
             activated: false,
-            paused : false,
-            remained : 1500
+            paused: false,
+            remained: 1500
         };
     }
-    
+
     handleStartTimer = () => {
         console.log(new Date());
         loadTimer();
-        this.interval= setInterval(() => {
-            this.setState((prev)=> {
+        this.interval = setInterval(() => {
+            this.setState((prev) => {
                 return {
-                    activated : true,
+                    activated: true,
                     paused: false,
-                    remained: prev.remained -1
+                    remained: prev.remained - 1
                 };
             });
         }, 1000);
     }
 
     handleResumeTimer = () => {
-        this.interval= setInterval(() => {
-            this.setState((prev)=> {
+        this.interval = setInterval(() => {
+            this.setState((prev) => {
                 return {
                     paused: true,
-                    remained: prev.remained -1
+                    remained: prev.remained - 1
                 };
             });
         }, 1000);
@@ -63,7 +61,7 @@ class TimerPannel extends Component {
                 activated: false,
                 paused: false,
                 remained: 1500
-            };  
+            };
         });
     };
 
@@ -71,20 +69,24 @@ class TimerPannel extends Component {
         console.log('on');
         this.setState(() => {
             clearInterval(this.interval);
-                return {
-                    paused: true
-                };
+            return {
+                paused: true
+            };
         });
     }
 
     render() {
-        let {remained, activated, paused} = this.state;
+        let {
+            activated,
+            paused,
+            remained
+        } = this.state;
         return (
             <div>
                 <Timer remained={remained} />
-                <TimerControl 
-                    activated= {activated}
-                    paused ={paused}
+                <TimerControl
+                    activated={activated}
+                    paused={paused}
                     handleStopTimer={this.handleStopTimer}
                     handleStartTimer={this.handleStartTimer}
                     handlePauseTimer={this.handlePauseTimer}
